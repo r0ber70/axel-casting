@@ -1,10 +1,9 @@
 #!/usr/bin/env node
 
-(function() {
+import Element from './element.js';
 
-  // Requires
-  var ansi = require('ansi')
-    , cursor = ansi(process.stdout)
+  import ansi from 'ansi';
+  let cursor = ansi(process.stdout)
     
     , stdo = process.stdout
     , cols = stdo.columns
@@ -19,9 +18,39 @@
       }
     ;
 
+  
 
+
+  const IDLE=0;
+  const RECORDING=1;
 
   var axel = {
+    elementalPoints: [],
+    elementState: IDLE,
+    config: function(cfg = {element: "fire"}) {
+    	this.cfg = cfg;
+    },
+
+    elementStart: function() {
+    	this.elementState = RECORDING;
+    },
+
+
+    elementRender: function() {
+    	this.elementalPoints.forEach((p) => {
+    		new Element().draw(p);
+    		
+    	});
+    	
+    	// return to old colors
+    	this.elementState = IDLE;
+    	this.elementalPoints = [];
+      	cursor.fg.rgb(color.fg.r, color.fg.g, color.fg.b);
+      	cursor.bg.rgb(color.bg.r, color.bg.g, color.bg.b);    	
+    
+    },
+    
+    
 
     // Clears a block
     scrub: function(x1, y1, w, h){
@@ -41,7 +70,7 @@
 
 
     clear:function () {
-      console.log('\033[2J');
+      console.log('\x1B[2J');
     },
 
 
@@ -96,6 +125,9 @@
           x > stdo.columns  || y > stdo.rows
       )){
           cursor.goto(parseInt(x), parseInt(y)).write(char || defaultChar);
+          if (this.elementState === RECORDING) {
+          	this.elementalPoints.push([x, y]);
+          }
       }
     },
 
@@ -178,14 +210,15 @@
     bg: function (r, g, b) {
       cursor.bg.rgb(r,g,b);
     },
-
+/*
     draw: function(cb){
       with(this){
         cb();
       }
-    }
+    }*/
   };
   
-  module.exports = axel;
 
-}());
+export default axel;
+
+

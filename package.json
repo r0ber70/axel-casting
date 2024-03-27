@@ -12,6 +12,7 @@
   "dependencies": {
     "ansi": "^0.3.0"
   },
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "http://github.com/f1lt3r/axel.git"
