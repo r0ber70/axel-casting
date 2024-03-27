@@ -38,8 +38,7 @@ import Element from './element.js';
 
     elementRender: function() {
     	this.elementalPoints.forEach((p) => {
-    		new Element().draw(p);
-    		
+    		new Element(p);
     	});
     	
     	// return to old colors
